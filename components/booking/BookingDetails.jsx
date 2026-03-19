@@ -1,14 +1,6 @@
 import React from 'react';
 
-interface BookingDetailsProps {
-  airport: string;
-  date: string;
-  passengers: string;
-  activeService: 'meet-greet' | 'vip-terminal';
-  setActiveService: (service: 'meet-greet' | 'vip-terminal') => void;
-}
-
-export default function BookingDetails({ airport, date, passengers, activeService, setActiveService }: BookingDetailsProps) {
+export default function BookingDetails({ airport, date, passengers, activeService, setActiveService }) {
   return (
     <div className="flex flex-col gap-6">
       {/* Summary Header Block */}

@@ -1,12 +1,6 @@
 import React from 'react';
 
-interface QuoteSidebarProps {
-  airport: string;
-  passengers: string;
-  activeService: 'meet-greet' | 'vip-terminal';
-}
-
-export default function QuoteSidebar({ airport, passengers, activeService }: QuoteSidebarProps) {
+export default function QuoteSidebar({ airport, passengers, activeService }) {
   const price = activeService === 'meet-greet' ? 474 : 850;
   const count = parseInt(passengers || '1');
   const total = price * count;
@@ -29,17 +23,13 @@ export default function QuoteSidebar({ airport, passengers, activeService }: Quo
           </div>
         </div>
         
-        <div className="flex justify-between text-xl font-extrabold text-gray-900 mb-8 pt-6 border-t border-gray-200">
+        <div className="flex justify-between text-xl font-extrabold text-gray-900 mb-6 pt-6 border-t border-gray-200">
           <span>Total:</span>
           <span>USD {total}</span>
         </div>
 
-        <button className="w-full bg-[#ea580c] hover:bg-orange-700 text-white font-bold py-4 rounded-lg shadow-md transition-colors shadow-orange-500/30">
-          Select & Book Now
-        </button>
-
-        <p className="text-xs text-gray-400 mt-6 leading-relaxed">
-          By clicking <span className="text-gray-500 font-semibold">"Select & Book Now"</span> I acknowledge that I agree with SkyLuxe VIP <a href="#" className="text-[#ea580c] hover:underline">Terms & Conditions</a> & <a href="#" className="text-[#ea580c] hover:underline">Privacy Policy</a>.
+        <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+          By clicking &quot;Select &amp; Book Now&quot; I acknowledge that I agree with SkyVip <a href="#" className="text-[#2a3bb1] hover:underline">Terms &amp; Conditions</a> &amp; <a href="#" className="text-[#2a3bb1] hover:underline">Privacy Policy</a>.
         </p>
       </div>
 

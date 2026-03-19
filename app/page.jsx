@@ -213,7 +213,7 @@ export default function Home() {
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
               Popular
             </div>
-            <img src="https://images.unsplash.com/photo-1569154941061-e231b4732ef1?q=80&w=800&auto=format&fit=crop" alt="VIP Terminal" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <img src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop" alt="VIP Terminal" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-32 backdrop-blur-[2px]">
               <div className="bg-[#ea580c] w-10 h-10 flex items-center justify-center rounded-lg mb-4 text-white">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
@@ -262,7 +262,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {/* Dest 1 */}
             <div className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer">
-              <img src="https://images.unsplash.com/photo-1513635269975-5969336cd121?q=80&w=600&auto=format&fit=crop" alt="London" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <img src="https://images.unsplash.com/photo-1529655683826-aba9b3e77383?q=80&w=600&auto=format&fit=crop" alt="London" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute bottom-4 left-4">
                 <h4 className="text-white font-bold text-lg md:text-xl">London (LHR)</h4>
@@ -289,7 +289,7 @@ export default function Home() {
             </div>
             {/* Dest 4 */}
             <div className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer">
-              <img src="https://images.unsplash.com/photo-1502602898657-3e9076161901?q=80&w=600&auto=format&fit=crop" alt="Paris" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=600&auto=format&fit=crop" alt="Paris" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute bottom-4 left-4">
                 <h4 className="text-white font-bold text-lg md:text-xl">Paris (CDG)</h4>
@@ -403,7 +403,7 @@ export default function Home() {
 
         {/* Bottom Banner */}
         <div className="max-w-7xl mx-auto px-4 md:px-12 mt-16 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-500">© 2024 SkyLuxe VIP Concierge. All rights reserved.</p>
+          <p className="text-xs text-gray-500">© 2026 SkyLuxe VIP Concierge. All rights reserved.</p>
           <div className="flex gap-4">
             <div className="w-8 h-5 bg-gray-800 rounded flex items-center justify-center text-[10px] font-bold">VISA</div>
             <div className="w-8 h-5 bg-gray-800 rounded flex items-center justify-center text-[10px] font-bold">MC</div>
