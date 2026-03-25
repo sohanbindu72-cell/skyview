@@ -1,23 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  flexRender,
+} from '@tanstack/react-table';
+import { Search, Plus, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 
 export default function LocationsAdmin() {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  // Helper to extract true URL from Next/Nuxt IPX optimizations
-  const getFlagUrl = (iconStr) => {
-    if (!iconStr) return '';
-    if (iconStr.includes('/http')) {
-      return 'http' + iconStr.split('/http')[1];
-    }
-    return iconStr;
-  };
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [sorting, setSorting] = useState([]);
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,6 +27,15 @@ export default function LocationsAdmin() {
     flagIcon: '',
     airports: []
   });
+
+  // Helper to extract true URL from Next/Nuxt IPX optimizations
+  const getFlagUrl = (iconStr) => {
+    if (!iconStr) return '';
+    if (iconStr.includes('/http')) {
+      return 'http' + iconStr.split('/http')[1];
+    }
+    return iconStr;
+  };
 
   const fetchLocations = async () => {
     try {
@@ -138,205 +145,311 @@ export default function LocationsAdmin() {
     }
   };
 
-  const totalPages = Math.ceil(locations.length / itemsPerPage);
-  const paginatedLocations = locations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // TanStack Table Columns
+  const columns = useMemo(() => [
+    {
+      accessorKey: 'countryName',
+      header: ({ column }) => (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1 hover:text-gray-900 font-semibold"
+        >
+          Country
+          <ArrowUpDown className="h-4 w-4" />
+        </button>
+      ),
+      cell: ({ row }) => {
+        const flagIcon = row.original.flagIcon;
+        const countryName = row.getValue('countryName');
+        const isUrl = flagIcon?.startsWith('/') || flagIcon?.startsWith('http') || getFlagUrl(flagIcon).startsWith('http');
+        return (
+          <div className="flex items-center gap-3">
+            {isUrl ? (
+              <img src={getFlagUrl(flagIcon)} alt={`${countryName} flag`} className="h-6 w-auto object-contain shrink-0 shadow-sm rounded-sm" />
+            ) : (
+              <span className="text-xl">{flagIcon}</span>
+            )}
+            <span className="font-medium text-gray-900">{countryName}</span>
+          </div>
+        );
+      }
+    },
+    {
+      accessorKey: 'airports',
+      header: 'Airports',
+      cell: ({ row }) => {
+        const airports = row.getValue('airports');
+        if (!airports || airports.length === 0) {
+          return <span className="text-gray-400 text-sm italic">No airports</span>;
+        }
+        return (
+          <div className="flex flex-wrap gap-1.5">
+            {airports.map((airport, idx) => (
+              <span key={idx} className="bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-md border border-blue-100 font-medium whitespace-nowrap">
+                {airport.name}
+              </span>
+            ))}
+          </div>
+        );
+      },
+      filterFn: (row, id, filterValue) => {
+        // Search across country and airports
+        const countryName = row.original.countryName.toLowerCase();
+        const airports = row.getValue(id) || [];
+        const search = filterValue.toLowerCase();
+        
+        return countryName.includes(search) || airports.some(a => a.name.toLowerCase().includes(search));
+      }
+    },
+    {
+      id: 'actions',
+      header: () => <div className="text-right font-semibold">Actions</div>,
+      cell: ({ row }) => {
+        const loc = row.original;
+        return (
+          <div className="flex items-center justify-end gap-1">
+            <button 
+              onClick={() => handleOpenModal(loc)}
+              className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+              title="Edit Location"
+            >
+              <Edit className="h-4 w-4" />
+            </button>
+            <button 
+              onClick={() => handleDelete(loc._id || loc.id)}
+              className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+              title="Delete Location"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        );
+      }
+    }
+  ], []);
+
+  const table = useReactTable({
+    data: locations,
+    columns,
+    state: {
+      globalFilter,
+      sorting,
+    },
+    onGlobalFilterChange: setGlobalFilter,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    // Set 10 per page to match previous logic
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
+  });
 
   return (
-    <div className="text-gray-900">
-      <div className="flex justify-between items-center mb-8">
+    <div className="text-gray-900 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">Locations</h1>
           <p className="text-gray-500 mt-1">Manage countries and available airports.</p>
         </div>
         <button 
           onClick={() => handleOpenModal()}
-          className="bg-[#ea580c] hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors bg-[#ea580c] text-white hover:bg-orange-700 h-10 px-4 py-2 shadow"
         >
-          + Add Location
+          <Plus className="mr-2 h-4 w-4" />
+          Add Location
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading locations...</div>
-        ) : locations.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">No locations found. Add one to get started.</div>
-        ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="p-4 font-semibold text-gray-700">Country</th>
-                  <th className="p-4 font-semibold text-gray-700">Airports</th>
-                  <th className="p-4 font-semibold text-gray-700 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedLocations.map((loc) => (
-                  <tr key={loc._id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        {loc.flagIcon?.startsWith('/') || loc.flagIcon?.startsWith('http') || getFlagUrl(loc.flagIcon).startsWith('http') ? (
-                          <img src={getFlagUrl(loc.flagIcon)} alt="flag" className="h-6 w-auto object-contain shrink-0" />
-                        ) : (
-                          <span className="text-xl">{loc.flagIcon}</span>
-                        )}
-                        <span className="font-medium">{loc.countryName}</span>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      {loc.airports?.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                          {loc.airports.map((airport, idx) => (
-                            <span key={idx} className="bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-md border border-blue-100 font-medium">
-                              {airport.name}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400 text-sm italic">No airports</span>
-                      )}
-                    </td>
-                    <td className="p-4 text-right space-x-2">
-                      <button 
-                        onClick={() => handleOpenModal(loc)}
-                        className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(loc._id || loc.id)}
-                        className="text-red-600 hover:text-red-900 text-sm font-medium"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+        {/* Table Toolbar / Search */}
+        <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
+          <div className="relative w-full max-w-sm flex items-center">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              value={globalFilter ?? ''}
+              onChange={e => setGlobalFilter(e.target.value)}
+              placeholder="Filter countries or airports..."
+              className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:border-transparent transition-all shadow-sm"
+            />
           </div>
-          {totalPages > 1 && (
-            <div className="p-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
-              <span className="text-sm text-gray-700">
-                Showing <span className="font-semibold">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-semibold">{Math.min(currentPage * itemsPerPage, locations.length)}</span> of <span className="font-semibold">{locations.length}</span> entries
-              </span>
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Previous
-                </button>
-                <button 
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Next
-                </button>
-              </div>
+        </div>
+
+        {/* TanStack Table mimicking Shadcn UI */}
+        <div className="overflow-x-auto">
+          <table className="w-full caption-bottom text-sm">
+            <thead className="[&_tr]:border-b bg-gray-50/50">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id} className="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0 whitespace-nowrap">
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="[&_tr:last-child]:border-0 bg-white">
+              {loading ? (
+                <tr>
+                  <td colSpan={columns.length} className="h-32 text-center text-gray-500">
+                    <div className="flex items-center justify-center gap-2">
+                       <span className="w-5 h-5 border-2 border-gray-300 border-t-[#ea580c] rounded-full animate-spin"></span>
+                       <span>Loading locations...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} data-state={row.getIsSelected() && "selected"} className="border-b transition-colors hover:bg-gray-50/50 data-[state=selected]:bg-gray-100">
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={columns.length} className="h-32 text-center text-gray-500">
+                    No results found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Shadcn Pagination Toolbar */}
+        {locations.length > 0 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50/30">
+            <div className="flex-1 text-sm text-gray-500">
+              Showing <span className="font-medium text-gray-900">{table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}</span> to <span className="font-medium text-gray-900">{Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, table.getFilteredRowModel().rows.length)}</span> of <span className="font-medium text-gray-900">{table.getFilteredRowModel().rows.length}</span> rows
             </div>
-          )}
-          </>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 h-8 px-4"
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 h-8 px-4"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-gray-200">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center shrink-0">
-              <h2 className="text-xl font-bold">{editingLocation ? 'Edit Location' : 'Add New Location'}</h2>
-              <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              <h2 className="text-xl font-bold tracking-tight text-gray-900">{editingLocation ? 'Edit Location' : 'Add New Location'}</h2>
+              <button onClick={handleCloseModal} className="text-gray-400 hover:bg-gray-100 hover:text-gray-900 p-2 rounded-full transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Country Name</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium leading-none text-gray-700">Country Name</label>
                   <input 
                     type="text" 
                     required
                     value={formData.countryName}
                     onChange={(e) => setFormData({...formData, countryName: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ea580c] focus:border-[#ea580c] outline-none transition-colors"
+                    className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ea580c] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                     placeholder="e.g. United Kingdom"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Flag Icon (Emoji or Image URL)</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium leading-none text-gray-700">Flag Icon (Emoji or Image URL)</label>
                   <input 
                     type="text" 
                     required
                     value={formData.flagIcon}
                     onChange={(e) => setFormData({...formData, flagIcon: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ea580c] focus:border-[#ea580c] outline-none transition-colors"
+                    className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ea580c] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                     placeholder="e.g. 🇬🇧 or /images/flag.png"
                   />
                 </div>
               </div>
 
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Airports</label>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-medium leading-none text-gray-700">Airports Configuration</label>
                   <button 
                     type="button"
                     onClick={addAirportField}
-                    className="text-sm text-[#ea580c] hover:text-orange-700 font-medium"
+                    className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ea580c] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-[#ea580c] hover:bg-orange-50 h-9 rounded-md px-3"
                   >
-                    + Add Airport
+                    <Plus className="mr-2 h-4 w-4" /> Add Airport
                   </button>
                 </div>
                 
                 <div className="space-y-3">
                   {formData.airports.map((airport, index) => (
-                    <div key={index} className="flex gap-3 items-start bg-gray-50 p-3 rounded-lg border border-gray-100">
-                      <div className="flex-1 space-y-3">
-                        <input 
-                          type="text" 
-                          required
-                          value={airport.name}
-                          onChange={(e) => handleAirportChange(index, 'name', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-[#ea580c] outline-none"
-                          placeholder="Airport Name (e.g. Heathrow (LHR))"
-                        />
-                        <input 
-                          type="url" 
-                          value={airport.link || ''}
-                          onChange={(e) => handleAirportChange(index, 'link', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-[#ea580c] outline-none"
-                          placeholder="Optional Booking Link URL"
-                        />
+                    <div key={index} className="flex gap-3 items-start bg-gray-50/50 p-4 rounded-lg border border-gray-200/60 shadow-sm relative group transition-all hover:border-gray-300">
+                      <div className="flex-1 space-y-4">
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Airport Name</label>
+                          <input 
+                            type="text" 
+                            required
+                            value={airport.name}
+                            onChange={(e) => handleAirportChange(index, 'name', e.target.value)}
+                            className="flex h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ea580c] disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="e.g. Heathrow (LHR)"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                           <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Booking URL (Optional)</label>
+                           <input 
+                              type="url" 
+                              value={airport.link || ''}
+                              onChange={(e) => handleAirportChange(index, 'link', e.target.value)}
+                              className="flex h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ea580c] disabled:cursor-not-allowed disabled:opacity-50"
+                              placeholder="https://"
+                           />
+                        </div>
                       </div>
                       <button 
                         type="button"
                         onClick={() => removeAirportField(index)}
-                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md shrink-0 mt-1"
+                        className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-md shrink-0 mt-[1.35rem] transition-colors border border-transparent hover:border-red-100"
+                        title="Remove Airport"
                         disabled={formData.airports.length === 1}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        <Trash2 className="h-5 w-5" />
                       </button>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-6">
                 <button 
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-gray-200 bg-white shadow-sm hover:bg-gray-100 hover:text-gray-900 h-10 px-4 py-2"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-[#ea580c] hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors bg-[#ea580c] text-white shadow hover:bg-orange-700 h-10 px-4 py-2"
                 >
                   {editingLocation ? 'Save Changes' : 'Create Location'}
                 </button>
