@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import AdminProtected from '@/components/admin/AdminProtected';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
@@ -13,7 +12,7 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <AdminProtected>
+    <>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
         <aside className="w-64 bg-gray-900 text-white flex flex-col">
@@ -27,8 +26,8 @@ export default function AdminLayout({ children }) {
           </nav>
           <div className="p-4 border-t border-gray-800">
             <button 
-              onClick={() => {
-                localStorage.removeItem('adminToken');
+              onClick={async () => {
+                await fetch('/api/auth/logout', { method: 'POST' });
                 window.location.href = '/admin/login';
               }}
               className="w-full text-left px-4 py-3 text-red-400 hover:bg-gray-800 rounded-lg transition-colors"
@@ -43,6 +42,6 @@ export default function AdminLayout({ children }) {
           {children}
         </main>
       </div>
-    </AdminProtected>
+    </>
   );
 }

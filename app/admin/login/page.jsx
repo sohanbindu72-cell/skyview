@@ -14,7 +14,7 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -23,7 +23,6 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem('adminToken', data.token);
         router.push('/admin');
       } else {
         setError(data.message || 'Login failed');
