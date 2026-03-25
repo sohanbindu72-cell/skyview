@@ -6,6 +6,10 @@ export default function LocationsAdmin() {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   // Helper to extract true URL from Next/Nuxt IPX optimizations
   const getFlagUrl = (iconStr) => {
     if (!iconStr) return '';
@@ -134,6 +138,9 @@ export default function LocationsAdmin() {
     }
   };
 
+  const totalPages = Math.ceil(locations.length / itemsPerPage);
+  const paginatedLocations = locations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="text-gray-900">
       <div className="flex justify-between items-center mb-8">
@@ -155,8 +162,9 @@ export default function LocationsAdmin() {
         ) : locations.length === 0 ? (
           <div className="p-8 text-center text-gray-500">No locations found. Add one to get started.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="p-4 font-semibold text-gray-700">Country</th>
@@ -165,7 +173,7 @@ export default function LocationsAdmin() {
                 </tr>
               </thead>
               <tbody>
-                {locations.map((loc) => (
+                {paginatedLocations.map((loc) => (
                   <tr key={loc._id} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
@@ -209,6 +217,30 @@ export default function LocationsAdmin() {
               </tbody>
             </table>
           </div>
+          {totalPages > 1 && (
+            <div className="p-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
+              <span className="text-sm text-gray-700">
+                Showing <span className="font-semibold">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-semibold">{Math.min(currentPage * itemsPerPage, locations.length)}</span> of <span className="font-semibold">{locations.length}</span> entries
+              </span>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+          </>
         )}
       </div>
 
