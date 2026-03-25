@@ -21,6 +21,7 @@ export default function AdminLayout({ children }) {
           </div>
           <nav className="flex-1 p-4 space-y-2">
             <a href="/admin" className="block px-4 py-3 rounded-lg bg-[#ea580c] font-medium">Dashboard</a>
+            <a href="/admin/locations" className="block px-4 py-3 rounded-lg hover:bg-gray-800 text-gray-300 transition-colors">Locations</a>
             <a href="#" className="block px-4 py-3 rounded-lg hover:bg-gray-800 text-gray-300 transition-colors">Reservations</a>
             <a href="#" className="block px-4 py-3 rounded-lg hover:bg-gray-800 text-gray-300 transition-colors">Settings</a>
           </nav>

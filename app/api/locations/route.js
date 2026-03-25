@@ -14,3 +14,15 @@ export async function GET() {
     return NextResponse.json({ message: 'Server Error' }, { status: 500 });
   }
 }
+
+export async function POST(request) {
+  try {
+    const data = await request.json();
+    await connectDB();
+    const newLocation = await Location.create(data);
+    return NextResponse.json(newLocation, { status: 201 });
+  } catch (error) {
+    console.error('Error creating location:', error);
+    return NextResponse.json({ message: 'Server Error' }, { status: 500 });
+  }
+}
