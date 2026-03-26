@@ -116,51 +116,111 @@ export default function ReservationDetailPage() {
 
           {/* Flight Details Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-50 bg-gray-50/50">
-              <h2 className="font-bold text-gray-900 uppercase tracking-wider text-xs">Flight & Route Details</h2>
+            <div className="p-6 border-b border-gray-50 bg-gray-50/50 flex justify-between items-center">
+              <h2 className="font-bold text-gray-900 uppercase tracking-wider text-xs">Route & Schedule</h2>
+              <Plane className="w-4 h-4 text-gray-400" />
             </div>
-            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Airport</p>
-                <p className="text-gray-900 font-bold">{reservation.fromAirport}</p>
+            <div className="p-8 space-y-10">
+              {/* Departure */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 font-bold shrink-0 border border-orange-100 uppercase">
+                    {reservation.fromLocation?.flag || "✈️"}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Departure (Service Point)</p>
+                    <p className="text-gray-900 font-bold">{reservation.fromAirport}</p>
+                    <p className="text-sm text-gray-500">{reservation.fromLocation?.countryName || "International"}</p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Schedule Date</p>
+                  <p className="text-gray-900 font-bold text-lg">{new Date(reservation.departureDate).toLocaleDateString(undefined, { dateStyle: 'full' })}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Departure Date</p>
-                <p className="text-gray-900 font-bold">{new Date(reservation.departureDate).toLocaleDateString()}</p>
+
+              {/* Arrival (Optional) */}
+              {reservation.toAirport && (
+                <div className="pt-8 border-t border-gray-50 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-bold shrink-0 border border-blue-100 uppercase">
+                      {reservation.toLocation?.flag || "🛬"}
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Arrival Destination</p>
+                      <p className="text-gray-900 font-bold">{reservation.toAirport}</p>
+                      <p className="text-sm text-gray-500">{reservation.toLocation?.countryName || "International"}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Return / Arrival Date</p>
+                    <p className="text-gray-900 font-bold text-lg">
+                      {reservation.returnDate ? new Date(reservation.returnDate).toLocaleDateString(undefined, { dateStyle: 'full' }) : "Not Specified"}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Passengers</p>
+                  <p className="text-xl font-black text-gray-900">{reservation.passengers} PAX</p>
+                </div>
+                <div className="md:col-span-2 p-4 bg-orange-50/30 rounded-xl border border-orange-100/50">
+                  <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-2">Internal Manifest Notes</p>
+                  <p className="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed italic">
+                    "{reservation.notes || "No special requirements listed for this flight."}"
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Passengers</p>
-                <p className="text-gray-900 font-bold text-xl">{reservation.passengers} Adult(s)</p>
-              </div>
-              <div className="md:col-span-2 p-4 bg-orange-50/50 rounded-xl border border-orange-100">
-                <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-2">Flight Manifest Notes</p>
-                <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{reservation.notes || "No special requirements listed."}</p>
+            </div>
+          </div>
+
+          {/* Metadata Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-4 px-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
+              <h2 className="font-bold text-gray-400 uppercase tracking-wider text-[10px]">System Metadata</h2>
+              <div className="flex gap-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <span>Created: {new Date(reservation.createdAt).toLocaleString()}</span>
+                <span>ID: {reservation._id}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Sidebar Actions */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Payment Summary</h3>
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-gray-500 text-sm">Total Amount</span>
-              <span className="text-2xl font-black text-gray-900">USD ${reservation.totalAmount}</span>
-            </div>
-            <div className={`w-full py-2 px-3 rounded-lg text-center font-bold text-xs uppercase tracking-widest mb-6 ${
-              reservation.paymentStatus === 'Paid' ? 'bg-green-50 text-green-700 ring-1 ring-green-100' : 'bg-red-50 text-red-700 ring-1 ring-red-100'
-            }`}>
-              {reservation.paymentStatus}
-            </div>
-            
-            <div className="space-y-2">
+        <div className="space-y-6 shrink-0">
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-6">Service Package</h3>
+            <div className="flex flex-col gap-6">
+              <div className="p-4 bg-gray-900 text-white rounded-2xl shadow-lg">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Level</p>
+                <p className="text-2xl font-black italic">{reservation.serviceLevel} SERVICE</p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-sm border-b border-gray-100 pb-3">
+                  <span className="text-gray-500">Unit Price</span>
+                  <span className="font-bold text-gray-900">USD ${reservation.totalAmount / reservation.passengers}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500 font-bold uppercase text-[10px] tracking-widest">Total Value</span>
+                  <span className="text-2xl font-black text-[#ea580c]">USD ${reservation.totalAmount}</span>
+                </div>
+              </div>
+
+              <div className={`w-full py-2.5 px-4 rounded-xl text-center font-black text-[10px] uppercase tracking-widest shadow-inner ${
+                reservation.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-50 text-red-600'
+              }`}>
+                {reservation.paymentStatus}
+              </div>
+              
               <button 
                 disabled={updating}
                 onClick={() => updateStatus(reservation.status, reservation.paymentStatus === 'Paid' ? 'Unpaid' : 'Paid')}
-                className="w-full py-3 bg-gray-50 text-gray-900 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-gray-100 transition-all border border-gray-200"
+                className="w-full py-4 bg-gray-50 text-gray-900 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-gray-100 transition-all border border-gray-200"
               >
-                Mark as {reservation.paymentStatus === 'Paid' ? 'Unpaid' : 'Paid'}
+                Toggle Payment Status
               </button>
             </div>
           </div>
