@@ -90,20 +90,18 @@ export default function BookingDetails({ airport, date, passengers, activeServic
 
         {/* Right Side: Features */}
         <div className="md:w-2/3 border-t md:border-t-0 md:border-l border-gray-100 pt-8 md:pt-0 md:pl-12">
-          <p className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-6">Included in Package:</p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
+          <p className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Included in Package:</p>
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {selectedPkg?.features.map((feature, idx) => (
-              <li key={idx} className="flex gap-4">
-                <div className="mt-0.5">
-                  <div className="w-5 h-5 rounded-full bg-orange-50 flex items-center justify-center">
-                    <svg className="w-3 h-3 text-[#ea580c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
+              <li key={idx} className="flex flex-col gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-[#ea580c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                 </div>
-                <p className="text-sm text-gray-600 font-medium">{feature}</p>
+                <p className="text-xs text-gray-700 font-bold leading-relaxed">{feature}</p>
               </li>
             ))}
             {selectedPkg?.features.length === 0 && (
-              <li className="text-sm text-gray-400 italic">Standard concierge features included.</li>
+              <li className="text-sm text-gray-400 italic col-span-full">Standard concierge features included.</li>
             )}
           </ul>
         </div>

@@ -71,10 +71,9 @@ export default function HeroBookingForm() {
                 {...register("serviceType", { required: true })}
                 className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-900 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#ea580c]"
               >
-                {servicePackages.map(p => (
-                  <option key={p._id} value={p.name}>{p.name}</option>
-                ))}
-                {servicePackages.length === 0 && <option>Loading...</option>}
+                <option value="Arrival">Arrival</option>
+                <option value="Departure">Departure</option>
+                <option value="Connection">Connection</option>
               </select>
               <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
