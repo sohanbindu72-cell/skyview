@@ -1,22 +1,42 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import AirportSearchField from "@/components/booking/AirportSearchField";
 
 export default function HeroBookingForm() {
   const router = useRouter();
+  const [servicePackages, setServicePackages] = useState([]);
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
       airport: "",
-      serviceType: "VIP Terminal",
+      serviceType: "",
       date: "",
       passengers: "1",
       email: ""
     }
   });
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const res = await fetch('/api/packages');
+        if (res.ok) {
+          const data = await res.json();
+          const activePackages = data.filter(p => p.isActive);
+          setServicePackages(activePackages);
+          if (activePackages.length > 0) {
+            setValue("serviceType", activePackages[0].name);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch packages:", err);
+      }
+    };
+    fetchPackages();
+  }, [setValue]);
 
   const selectedAirport = watch("airport");
 
@@ -48,12 +68,13 @@ export default function HeroBookingForm() {
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Service Type</label>
             <div className="relative">
               <select
-                {...register("serviceType")}
+                {...register("serviceType", { required: true })}
                 className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-900 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#ea580c]"
               >
-                <option>VIP Terminal</option>
-                <option>Meet & Greet</option>
-                <option>Private Suite</option>
+                {servicePackages.map(p => (
+                  <option key={p._id} value={p.name}>{p.name}</option>
+                ))}
+                {servicePackages.length === 0 && <option>Loading...</option>}
               </select>
               <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

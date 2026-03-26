@@ -57,6 +57,7 @@ function BookingContent() {
   const [date, setDate] = useState('');
   const [activeService, setActiveService] = useState('meet-greet');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [availablePackages, setAvailablePackages] = useState([]);
 
   const methods = useForm({
     resolver: zodResolver(bookingSchema),
@@ -89,18 +90,43 @@ function BookingContent() {
   const passengers = methods.watch('passengerCount') || 1;
 
   useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const res = await fetch('/api/packages');
+        if (res.ok) {
+          const data = await res.json();
+          setAvailablePackages(data.filter(p => p.isActive));
+        }
+      } catch (err) {
+        console.error("Failed to fetch packages:", err);
+      }
+    };
+    fetchPackages();
+  }, []);
+
+  useEffect(() => {
     setAirport(searchParams.get('airport') || 'AMS, Amsterdam Airport Schiphol');
     setDate(searchParams.get('date') || '18 Mar, 2026');
     
+    // Attempt to match the service from parameters with a package in the DB
     const serviceParam = searchParams.get('service') || '';
-    if (serviceParam.toLowerCase().includes('terminal')) {
-      setActiveService('vip-terminal');
+    if (availablePackages.length > 0) {
+      const matched = availablePackages.find(p => p.name.toLowerCase() === serviceParam.toLowerCase());
+      if (matched) {
+        setActiveService(matched.name);
+      } else {
+        // Fallback or specific logic for old strings
+        if (serviceParam.toLowerCase().includes('terminal')) {
+          setActiveService('VIP Terminal');
+        } else {
+          setActiveService(availablePackages[0].name);
+        }
+      }
     }
 
     const emailParam = searchParams.get('email');
     if (emailParam) {
       methods.setValue('email', emailParam);
-      // We'll also prepopulate the contactEmail just in case they uncheck "Same as primary passenger"
       methods.setValue('contactEmail', emailParam);
     }
 
@@ -108,7 +134,7 @@ function BookingContent() {
     if (passengersParam) {
       methods.setValue('passengerCount', parseInt(passengersParam, 10) || 1);
     }
-  }, [searchParams, methods]);
+  }, [searchParams, methods, availablePackages]);
 
   const handleNextStep = () => {
     setCurrentStep(prev => Math.min(prev + 1, 5));
@@ -123,13 +149,17 @@ function BookingContent() {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     
+    // Find the current selected package object to get its price
+    const selectedPkg = availablePackages.find(p => p.name === activeService) || availablePackages[0];
+    const unitPrice = selectedPkg?.basePrice || 474;
+
     const finalData = {
       ...data,
       airport,
       date,
       serviceType: activeService,
-      pricePerPassenger: activeService === 'meet-greet' ? 474 : 850,
-      totalPrice: (activeService === 'meet-greet' ? 474 : 850) * parseInt(passengers)
+      pricePerPassenger: unitPrice,
+      totalPrice: unitPrice * parseInt(passengers)
     };
 
     try {

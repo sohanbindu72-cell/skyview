@@ -37,6 +37,14 @@ export default function AdminLayout({ children }) {
               Locations
             </a>
             <a 
+              href="/admin/packages" 
+              className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                pathname.startsWith('/admin/packages') ? 'bg-[#ea580c] text-white' : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              Packages
+            </a>
+            <a 
               href="/admin/reservations" 
               className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
                 pathname.startsWith('/admin/reservations') ? 'bg-[#ea580c] text-white' : 'text-gray-300 hover:bg-gray-800'

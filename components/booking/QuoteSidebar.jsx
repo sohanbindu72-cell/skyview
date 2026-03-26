@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function QuoteSidebar({ airport, passengers, activeService }) {
-  const price = activeService === 'meet-greet' ? 474 : 850;
+  const [packages, setPackages] = useState([]);
+  
+  useEffect(() => {
+    const fetchPkgs = async () => {
+      const res = await fetch('/api/packages');
+      if (res.ok) setPackages(await res.json());
+    };
+    fetchPkgs();
+  }, []);
+
+  const selectedPkg = packages.find(p => p.name === activeService) || packages[0];
+  const price = selectedPkg?.basePrice || 474;
   const count = parseInt(passengers || '1');
   const total = price * count;
 
@@ -9,7 +20,7 @@ export default function QuoteSidebar({ airport, passengers, activeService }) {
     <div className="flex flex-col gap-6">
       {/* Quote Box */}
       <div className="bg-[#f8fafc] rounded-xl p-8 shadow-sm border border-gray-100">
-        <h3 className="text-xl font-bold text-gray-900 mb-1">Quote for {activeService === 'meet-greet' ? 'Meet & Greet' : 'VIP Terminal'}</h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-1">Quote for {activeService}</h3>
         <p className="text-sm text-gray-500 font-medium mb-8 pb-6 border-b border-gray-200">at {airport || 'Amsterdam Airport Schiphol, AMS'}</p>
         
         <div className="space-y-4 text-sm font-semibold mb-6">
