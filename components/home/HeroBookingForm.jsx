@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import AirportSearchField from "@/components/booking/AirportSearchField";
+import { submitBooking } from "@/app/actions/booking";
 
 export default function HeroBookingForm() {
   const router = useRouter();
@@ -20,7 +21,26 @@ export default function HeroBookingForm() {
 
   const selectedAirport = watch("airport");
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    // Capture the lead in the database immediately as a "Pending" reservation
+    let bookingId = null;
+    try {
+      const response = await submitBooking({
+        airport: data.airport,
+        date: data.date,
+        passengerCount: data.passengers,
+        email: data.email,
+        serviceType: data.serviceType,
+        firstName: '', // Partial data
+        lastName: 'Lead'
+      });
+      if (response.success) {
+        bookingId = response.bookingId;
+      }
+    } catch (err) {
+      console.error("Lead capture failed:", err);
+    }
+
     const query = new URLSearchParams({
       airport: data.airport,
       service: data.serviceType,
@@ -28,6 +48,11 @@ export default function HeroBookingForm() {
       passengers: data.passengers,
       email: data.email
     });
+
+    if (bookingId) {
+      query.set('bookingId', bookingId);
+    }
+
     router.push(`/booking?${query.toString()}`);
   };
 

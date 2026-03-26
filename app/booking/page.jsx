@@ -56,6 +56,7 @@ function BookingContent() {
   const [date, setDate] = useState('');
   const [activeService, setActiveService] = useState('meet-greet');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
 
   const methods = useForm({
     resolver: zodResolver(bookingSchema),
@@ -88,6 +89,7 @@ function BookingContent() {
   const passengers = methods.watch('passengerCount') || 1;
 
   useEffect(() => {
+    setBookingId(searchParams.get('bookingId'));
     setAirport(searchParams.get('airport') || 'AMS, Amsterdam Airport Schiphol');
     setDate(searchParams.get('date') || '18 Mar, 2026');
     
@@ -133,7 +135,7 @@ function BookingContent() {
     };
 
     try {
-      const response = await submitBooking(finalData);
+      const response = await submitBooking(finalData, bookingId);
       
       if (response.success) {
         alert("Booking submitted successfully! Check browser console.");
