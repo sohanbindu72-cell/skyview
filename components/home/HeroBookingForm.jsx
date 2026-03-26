@@ -4,12 +4,11 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import AirportSearchField from "@/components/booking/AirportSearchField";
-import { submitBooking } from "@/app/actions/booking";
 
 export default function HeroBookingForm() {
   const router = useRouter();
 
-  const { register, handleSubmit, setValue, watch } = useForm({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
       airport: "",
       serviceType: "VIP Terminal",
@@ -21,26 +20,7 @@ export default function HeroBookingForm() {
 
   const selectedAirport = watch("airport");
 
-  const onSubmit = async (data) => {
-    // Capture the lead in the database immediately as a "Pending" reservation
-    let bookingId = null;
-    try {
-      const response = await submitBooking({
-        airport: data.airport,
-        date: data.date,
-        passengerCount: data.passengers,
-        email: data.email,
-        serviceType: data.serviceType,
-        firstName: '', // Partial data
-        lastName: 'Lead'
-      });
-      if (response.success) {
-        bookingId = response.bookingId;
-      }
-    } catch (err) {
-      console.error("Lead capture failed:", err);
-    }
-
+  const onSubmit = (data) => {
     const query = new URLSearchParams({
       airport: data.airport,
       service: data.serviceType,
@@ -48,10 +28,6 @@ export default function HeroBookingForm() {
       passengers: data.passengers,
       email: data.email
     });
-
-    if (bookingId) {
-      query.set('bookingId', bookingId);
-    }
 
     router.push(`/booking?${query.toString()}`);
   };
@@ -65,7 +41,7 @@ export default function HeroBookingForm() {
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Select Airport</label>
             <AirportSearchField 
               selectedAirport={selectedAirport} 
-              onSelect={(name) => setValue("airport", name)} 
+              onSelect={(name) => setValue("airport", name, { shouldValidate: true })} 
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
@@ -88,11 +64,13 @@ export default function HeroBookingForm() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</label>
+            <label className={`text-xs font-semibold uppercase tracking-wide ${errors.date ? 'text-red-500' : 'text-gray-500'}`}>
+              Date {errors.date && '*'}
+            </label>
             <input
               type="date"
-              {...register("date")}
-              className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#ea580c]"
+              {...register("date", { required: "Date is required" })}
+              className={`w-full bg-gray-50 border ${errors.date ? 'border-red-300 ring-1 ring-red-100' : 'border-gray-200'} text-gray-900 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#ea580c]`}
             />
           </div>
           <div className="space-y-1.5">

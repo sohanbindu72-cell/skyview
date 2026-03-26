@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -50,13 +50,13 @@ const bookingSchema = z.object({
 
 function BookingContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [airport, setAirport] = useState('');
   const [date, setDate] = useState('');
   const [activeService, setActiveService] = useState('meet-greet');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [bookingId, setBookingId] = useState(null);
 
   const methods = useForm({
     resolver: zodResolver(bookingSchema),
@@ -89,7 +89,6 @@ function BookingContent() {
   const passengers = methods.watch('passengerCount') || 1;
 
   useEffect(() => {
-    setBookingId(searchParams.get('bookingId'));
     setAirport(searchParams.get('airport') || 'AMS, Amsterdam Airport Schiphol');
     setDate(searchParams.get('date') || '18 Mar, 2026');
     
@@ -124,7 +123,6 @@ function BookingContent() {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     
-    // Combine form inputs with the state-driven selections
     const finalData = {
       ...data,
       airport,
@@ -135,11 +133,10 @@ function BookingContent() {
     };
 
     try {
-      const response = await submitBooking(finalData, bookingId);
+      const response = await submitBooking(finalData);
       
       if (response.success) {
-        alert("Booking submitted successfully! Check browser console.");
-        console.log("Server response:", response);
+        router.push('/booking/thank-you');
       } else {
         alert("There was an error submitting your booking: " + response.message);
       }

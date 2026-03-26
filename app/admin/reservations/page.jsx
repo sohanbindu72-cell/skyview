@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,7 +10,7 @@ import {
   getSortedRowModel,
   flexRender,
 } from '@tanstack/react-table';
-import { Search, Edit, Trash2, ArrowUpDown, Calendar, User, Plane, Wallet } from 'lucide-react';
+import { Search, Edit, Trash2, ArrowUpDown, Calendar, User, Plane, Wallet, Eye } from 'lucide-react';
 
 export default function ReservationsAdmin() {
   const [reservations, setReservations] = useState([]);
@@ -114,13 +115,17 @@ export default function ReservationsAdmin() {
       accessorKey: 'route',
       header: 'Route',
       cell: ({ row }) => (
-        <div className="flex items-center gap-2 text-sm">
-          <span className="font-medium text-gray-700">{row.original.fromLocation?.countryName}</span>
-          <Plane className="h-3 w-3 text-gray-400" />
-          <span className="font-medium text-gray-700">{row.original.toLocation?.countryName}</span>
+        <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
+          <span>{row.original.fromLocation?.countryName || (row.original.fromAirport ? row.original.fromAirport.split(',')[0] : 'N/A')}</span>
+          {row.original.toAirport && (
+            <>
+              <Plane className="h-3 w-3 text-gray-400" />
+              <span>{row.original.toLocation?.countryName || row.original.toAirport.split(',')[0]}</span>
+            </>
+          )}
         </div>
       ),
-      accessorFn: row => `${row.fromLocation?.countryName} ${row.toLocation?.countryName}`
+      accessorFn: row => `${row.fromAirport} ${row.toAirport || ''}`
     },
     {
       accessorKey: 'departureDate',
@@ -177,6 +182,13 @@ export default function ReservationsAdmin() {
       header: () => <div className="text-right">Actions</div>,
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1">
+          <Link 
+            href={`/admin/reservations/${row.original._id}`}
+            className="p-2 text-gray-400 hover:text-[#ea580c] hover:bg-orange-50 rounded-md transition-colors"
+            title="View Details"
+          >
+            <Eye className="h-4 w-4" />
+          </Link>
           <button 
             onClick={() => handleOpenModal(row.original)}
             className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
