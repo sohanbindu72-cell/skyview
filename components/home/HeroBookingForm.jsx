@@ -120,7 +120,7 @@ export default function HeroBookingForm() {
           type="submit"
           className="w-full bg-[#ea580c] hover:bg-orange-700 text-white font-bold py-3.5 rounded-lg mt-4 transition-colors shadow-lg shadow-orange-500/30"
         >
-          Check Availability
+          Check Price
         </button>
         <p className="text-center text-xs text-gray-400 mt-4">No payment required today • 24/7 Concierge Support</p>
       </form>
