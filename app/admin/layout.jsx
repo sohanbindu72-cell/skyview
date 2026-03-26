@@ -20,10 +20,36 @@ export default function AdminLayout({ children }) {
             SkyLuxe <span className="text-[#ea580c]">VIP</span>
           </div>
           <nav className="flex-1 p-4 space-y-2">
-            <a href="/admin" className="block px-4 py-3 rounded-lg bg-[#ea580c] font-medium">Dashboard</a>
-            <a href="/admin/locations" className="block px-4 py-3 rounded-lg hover:bg-gray-800 text-gray-300 transition-colors">Locations</a>
-            <a href="#" className="block px-4 py-3 rounded-lg hover:bg-gray-800 text-gray-300 transition-colors">Reservations</a>
-            <a href="#" className="block px-4 py-3 rounded-lg hover:bg-gray-800 text-gray-300 transition-colors">Settings</a>
+            <a 
+              href="/admin" 
+              className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                pathname === '/admin' ? 'bg-[#ea580c] text-white' : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              Dashboard
+            </a>
+            <a 
+              href="/admin/locations" 
+              className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                pathname.startsWith('/admin/locations') ? 'bg-[#ea580c] text-white' : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              Locations
+            </a>
+            <a 
+              href="/admin/reservations" 
+              className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                pathname.startsWith('/admin/reservations') ? 'bg-[#ea580c] text-white' : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              Reservations
+            </a>
+            <a 
+              href="#" 
+              className="block px-4 py-3 rounded-lg hover:bg-gray-800 text-gray-300 transition-colors"
+            >
+              Settings
+            </a>
           </nav>
           <div className="p-4 border-t border-gray-800">
             <button 
