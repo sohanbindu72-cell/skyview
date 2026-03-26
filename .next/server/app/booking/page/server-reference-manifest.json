@@ -1,0 +1,20 @@
+{
+  "node": {
+    "406d84bbce5912006d790ee5160500893312eee3b8": {
+      "workers": {
+        "app/booking/page": {
+          "moduleId": 44849,
+          "async": false,
+          "exportedName": "submitBooking",
+          "filename": "app/actions/booking.js"
+        }
+      },
+      "layer": {
+        "app/booking/page": "action-browser"
+      },
+      "exportedName": "submitBooking",
+      "filename": "app/actions/booking.js"
+    }
+  },
+  "edge": {}
+}
