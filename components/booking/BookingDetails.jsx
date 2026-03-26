@@ -53,9 +53,14 @@ export default function BookingDetails({ airport, date, passengers, activeServic
           <button 
             key={p._id}
             onClick={() => setActiveService(p.name)}
-            className={`flex-1 min-w-[140px] p-5 rounded-xl border-2 transition-all ${activeService === p.name ? 'border-[#ea580c] bg-white shadow-md' : 'border-gray-200 bg-gray-50/50 hover:bg-gray-50'}`}
+            className={`flex-1 min-w-[160px] p-5 rounded-2xl border-2 transition-all relative group ${activeService === p.name ? 'border-[#ea580c] bg-white shadow-xl translate-y-[-2px]' : 'border-gray-200 bg-gray-50/50 hover:bg-gray-50 hover:border-gray-300'}`}
           >
-            <div className="text-left">
+            {p.isPopular && (
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#ea580c] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-orange-500/30 whitespace-nowrap">
+                Most Popular
+              </div>
+            )}
+            <div className="text-left pt-1">
               <h4 className="font-bold text-gray-900 mb-1">{p.name}</h4>
               <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Base USD ${p.basePrice}</p>
             </div>

@@ -10,9 +10,9 @@ export async function GET() {
     // Seed initial data if empty
     if (packages.length === 0) {
       const initialPackages = [
-        { name: "Meet & Greet", basePrice: 474, order: 0, features: ["Personal assistant", "Fast-track immigration", "Porter service"] },
-        { name: "VIP Terminal", basePrice: 850, order: 1, features: ["Private suite", "Chauffeur to aircraft", "Gourmet dining"] },
-        { name: "Private Suite", basePrice: 1200, order: 2, features: ["Ultimate privacy", "En-suite bathroom", "Dedicated concierge"] }
+        { name: "Meet & Greet", basePrice: 474, order: 0, features: ["Personal assistant", "Fast-track immigration", "Porter service"], isPopular: false },
+        { name: "VIP Terminal", basePrice: 850, order: 1, features: ["Private suite", "Chauffeur to aircraft", "Gourmet dining"], isPopular: true },
+        { name: "Private Suite", basePrice: 1200, order: 2, features: ["Ultimate privacy", "En-suite bathroom", "Dedicated concierge"], isPopular: false }
       ];
       await ServicePackage.insertMany(initialPackages);
       packages = await ServicePackage.find({}).sort({ order: 1 });

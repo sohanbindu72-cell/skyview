@@ -45,6 +45,7 @@ export default function PackagesAdmin() {
         description: p.description || '',
         features: p.features.length > 0 ? p.features : [''],
         isActive: p.isActive,
+        isPopular: p.isPopular || false,
         order: p.order || 0
       });
     } else {
@@ -55,6 +56,7 @@ export default function PackagesAdmin() {
         description: '',
         features: [''],
         isActive: true,
+        isPopular: false,
         order: packages.length
       });
     }
@@ -147,7 +149,12 @@ export default function PackagesAdmin() {
             <div className="p-8">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h3 className="text-2xl font-black text-gray-900 uppercase italic leading-none">{p.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-2xl font-black text-gray-900 uppercase italic leading-none">{p.name}</h3>
+                    {p.isPopular && (
+                      <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[8px] font-black uppercase tracking-widest rounded-full">Popular</span>
+                    )}
+                  </div>
                   <p className="text-[#ea580c] font-black text-3xl mt-2 tracking-tighter">
                     <span className="text-sm font-bold text-gray-400 mr-1 uppercase">USD</span> ${p.basePrice}
                   </p>
@@ -222,15 +229,28 @@ export default function PackagesAdmin() {
                       className="w-full h-14 px-5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500 outline-none font-bold text-gray-900"
                     />
                   </div>
-                  <div className="flex items-center gap-4 py-4">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({...formData, isActive: !formData.isActive})}
-                      className={`w-14 h-8 rounded-full transition-all relative ${formData.isActive ? 'bg-orange-600' : 'bg-gray-200'}`}
-                    >
-                      <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${formData.isActive ? 'right-1' : 'left-1'}`} />
-                    </button>
-                    <span className="text-sm font-black text-gray-900 uppercase">Service {formData.isActive ? 'Active' : 'Disabled'}</span>
+                  <div className="flex flex-col gap-4 py-4">
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({...formData, isActive: !formData.isActive})}
+                        className={`w-14 h-8 rounded-full transition-all relative ${formData.isActive ? 'bg-orange-600' : 'bg-gray-200'}`}
+                      >
+                        <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${formData.isActive ? 'right-1' : 'left-1'}`} />
+                      </button>
+                      <span className="text-sm font-black text-gray-900 uppercase">Service {formData.isActive ? 'Active' : 'Disabled'}</span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({...formData, isPopular: !formData.isPopular})}
+                        className={`w-14 h-8 rounded-full transition-all relative ${formData.isPopular ? 'bg-blue-600' : 'bg-gray-200'}`}
+                      >
+                        <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${formData.isPopular ? 'right-1' : 'left-1'}`} />
+                      </button>
+                      <span className="text-sm font-black text-gray-900 uppercase">Mark as Popular</span>
+                    </div>
                   </div>
                 </div>
 
