@@ -40,7 +40,20 @@ export default function HeroBookingForm() {
 
   const selectedAirport = watch("airport");
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    // Capture lead first if email is provided
+    if (data.email) {
+      try {
+        await fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } catch (err) {
+        console.error('Failed to capture lead:', err);
+      }
+    }
+
     const query = new URLSearchParams({
       airport: data.airport,
       service: data.serviceType,

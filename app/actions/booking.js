@@ -46,6 +46,78 @@ export async function submitBooking(data, existingId = null) {
       booking = await Reservation.create(reservationData);
     }
 
+    // --- Auto-Registration Logic ---
+    try {
+      const User = (await import('@/lib/models/User')).default;
+      const bcrypt = (await import('bcryptjs')).default;
+      const crypto = await import('crypto');
+
+      const existingUser = await User.findOne({ email: data.email });
+      if (!existingUser) {
+        // Create a new user with a temporary password
+        const tempPassword = crypto.randomBytes(4).toString('hex'); // 8 character hex
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+        
+        await User.create({
+          name: reservationData.customerName,
+          email: data.email,
+          password: hashedPassword,
+          phone: reservationData.customerPhone,
+          isPasswordTemp: true,
+          bookings: [booking._id]
+        });
+
+        // Trigger welcome email with temporary password
+        try {
+          const { sendPasswordEmail } = await import('@/lib/mail');
+          await sendPasswordEmail(data.email, reservationData.customerName, tempPassword);
+        } catch (mailError) {
+          console.error("[MAIL] Failed to trigger welcome email:", mailError);
+        }
+
+        console.log(`[AUTH] Created user for ${data.email} with temp password: ${tempPassword}`);
+      } else {
+        // Link the new booking to the existing user
+        if (!existingUser.bookings.includes(booking._id)) {
+          existingUser.bookings.push(booking._id);
+        }
+
+        // IMPROVEMENT: If the user still has a temporary password, 
+        // regenerate and resend it to ensure they can find their login info.
+        if (existingUser.isPasswordTemp) {
+          const tempPassword = crypto.randomBytes(4).toString('hex');
+          const hashedPassword = await bcrypt.hash(tempPassword, 10);
+          existingUser.password = hashedPassword;
+          
+          try {
+            const { sendPasswordEmail } = await import('@/lib/mail');
+            await sendPasswordEmail(data.email, existingUser.name, tempPassword);
+            console.log(`[AUTH] Regenerated temp password for existing user ${data.email}: ${tempPassword}`);
+          } catch (mailError) {
+            console.error("[MAIL] Failed to resend temp password:", mailError);
+          }
+        }
+        
+        await existingUser.save();
+      }
+    } catch (authError) {
+      console.error("Auto-registration error (non-blocking):", authError);
+      // We don't want to fail the whole booking if auth setup fails
+    }
+    // --------------------------------
+    
+    // --- Lead Conversion Logic ---
+    try {
+      const Lead = (await import('@/lib/models/Lead')).default;
+      await Lead.updateMany(
+        { email: data.email, status: 'Inquiry' },
+        { $set: { status: 'Booked' } }
+      );
+    } catch (leadError) {
+      console.error("Lead conversion error (non-blocking):", leadError);
+    }
+    // --------------------------------
+
     return {
       success: true,
       message: existingId ? "Booking updated successfully" : "Booking received successfully",

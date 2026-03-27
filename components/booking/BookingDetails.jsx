@@ -50,7 +50,7 @@ export default function BookingDetails({ airport, date, passengers, activeServic
       {/* Tabs */}
       <div className="flex flex-wrap gap-4 mt-2">
         {packages.map(p => (
-          <button 
+          <button
             key={p._id}
             onClick={() => setActiveService(p.name)}
             className={`flex-1 min-w-[160px] p-5 rounded-2xl border-2 transition-all relative group ${activeService === p.name ? 'border-[#ea580c] bg-white shadow-xl translate-y-[-2px]' : 'border-gray-200 bg-gray-50/50 hover:bg-gray-50 hover:border-gray-300'}`}
@@ -91,9 +91,9 @@ export default function BookingDetails({ airport, date, passengers, activeServic
         {/* Right Side: Features */}
         <div className="md:w-2/3 border-t md:border-t-0 md:border-l border-gray-100 pt-8 md:pt-0 md:pl-12">
           <p className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Included in Package:</p>
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <ul className="grid grid-cols-1 gap-6">
             {selectedPkg?.features.map((feature, idx) => (
-              <li key={idx} className="flex flex-col gap-3">
+              <li key={idx} className="flex flex-row items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
                   <svg className="w-5 h-5 text-[#ea580c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                 </div>
