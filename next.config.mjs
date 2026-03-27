@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  distDir: 'build',
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -11,5 +10,7 @@ const nextConfig = {
     unoptimized: true,
   },
 };
+
+export default nextConfig;
 
 export default nextConfig;
