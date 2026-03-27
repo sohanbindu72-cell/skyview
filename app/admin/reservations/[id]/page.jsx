@@ -1,21 +1,31 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { Plane } from "lucide-react";
+import { Plane, CreditCard, Undo, ShieldCheck, Clock } from "lucide-react";
 
 export default function ReservationDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const [reservation, setReservation] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     fetchReservation();
+    fetchTransactions();
   }, [id]);
+
+  const fetchTransactions = async () => {
+    try {
+      const res = await fetch('/api/admin/transactions');
+      if (res.ok) {
+        const data = await res.json();
+        const related = data.filter(t => t.reservationId?._id === id || t.reservationId === id);
+        setTransactions(related);
+      }
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+    }
+  };
 
   const fetchReservation = async () => {
     try {
@@ -44,6 +54,39 @@ export default function ReservationDetailPage() {
 
       if (!res.ok) throw new Error("Update failed");
       await fetchReservation();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleRefund = async () => {
+    if (!confirm("Are you sure you want to process a refund for this booking? This will also cancel the reservation.")) return;
+    
+    setUpdating(true);
+    try {
+      const lastPayment = transactions.find(t => t.status === 'Succeeded' && t.type === 'Payment');
+      if (!lastPayment) {
+        alert("No successful payment found to refund.");
+        return;
+      }
+
+      const res = await fetch('/api/admin/transactions/refund', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          transactionId: lastPayment._id,
+          reservationId: id,
+          reason: "Customer requested refund"
+        })
+      });
+
+      if (!res.ok) throw new Error("Refund failed");
+      
+      alert("Refund processed successfully!");
+      fetchReservation();
+      fetchTransactions();
     } catch (err) {
       alert(err.message);
     } finally {
@@ -187,6 +230,48 @@ export default function ReservationDetailPage() {
               </div>
             </div>
           </div>
+
+          {/* Transaction History */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-6 border-b border-gray-50 bg-gray-50/50 flex justify-between items-center">
+              <h2 className="font-bold text-gray-900 uppercase tracking-wider text-xs flex items-center gap-2">
+                <CreditCard className="w-3.5 h-3.5" /> Transaction History
+              </h2>
+            </div>
+            <div className="p-0">
+              {transactions.length === 0 ? (
+                <div className="p-8 text-center text-gray-400 text-sm">No recorded transactions for this booking.</div>
+              ) : (
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-gray-50/50 text-gray-400 text-[10px] uppercase font-bold tracking-widest">
+                    <tr>
+                      <th className="px-6 py-3">Date</th>
+                      <th className="px-6 py-3">Type</th>
+                      <th className="px-6 py-3">Amount</th>
+                      <th className="px-6 py-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {transactions.map(t => (
+                      <tr key={t._id}>
+                        <td className="px-6 py-4 text-gray-500">{new Date(t.createdAt).toLocaleDateString()}</td>
+                        <td className="px-6 py-4 font-medium">{t.type}</td>
+                        <td className="px-6 py-4 font-bold">${t.amount}</td>
+                        <td className="px-6 py-4">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                            t.status === 'Succeeded' ? 'bg-green-100 text-green-700' : 
+                            t.status === 'Refunded' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
+                          }`}>
+                            {t.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Sidebar Actions */}
@@ -232,16 +317,23 @@ export default function ReservationDetailPage() {
               <button 
                 disabled={updating || reservation.status === 'Confirmed'}
                 onClick={() => updateStatus('Confirmed')}
-                className="w-full py-3 bg-[#ea580c] text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-orange-700 disabled:opacity-50 transition-all shadow-lg shadow-orange-500/20"
+                className="w-full py-3 bg-[#ea580c] text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-orange-700 disabled:opacity-50 transition-all shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2"
               >
-                Confirm Booking
+                <ShieldCheck className="w-4 h-4" /> Confirm Booking
+              </button>
+              <button 
+                disabled={updating || reservation.paymentStatus !== 'Paid'}
+                onClick={handleRefund}
+                className="w-full py-3 bg-white text-amber-600 border border-amber-100 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-amber-50 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              >
+                <Undo className="w-4 h-4" /> Issue Refund
               </button>
               <button 
                 disabled={updating || reservation.status === 'Cancelled'}
                 onClick={() => updateStatus('Cancelled')}
-                className="w-full py-3 bg-white text-red-600 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-red-50 disabled:opacity-50 transition-all border border-red-100"
+                className="w-full py-3 bg-white text-red-600 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-red-50 disabled:opacity-50 transition-all border border-red-100 flex items-center justify-center gap-2"
               >
-                Cancel Booking
+                <Clock className="w-4 h-4" /> Cancel Booking
               </button>
             </div>
           </div>
