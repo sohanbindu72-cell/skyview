@@ -4,15 +4,22 @@ const { query, execute } = require('../config/db');
 
 router.get('/', async (req, res) => {
   try {
-    const sql = `
+    const { email } = req.query;
+    let sql = `
       SELECT r.*, 
              l1.country_name as from_country, l2.country_name as to_country 
       FROM reservations r
       LEFT JOIN locations l1 ON r.from_location_id = l1.id
       LEFT JOIN locations l2 ON r.to_location_id = l2.id
-      ORDER BY r.created_at DESC
     `;
-    const results = await query(sql);
+    const params = [];
+    if (email) {
+      sql += ' WHERE r.customer_email = ? ';
+      params.push(email);
+    }
+    sql += ' ORDER BY r.created_at DESC';
+    
+    const results = await query(sql, params);
     
     const reservations = results.map(row => ({
       _id: row.id,
@@ -28,6 +35,7 @@ router.get('/', async (req, res) => {
       returnDate: row.return_date,
       passengers: row.passengers,
       serviceLevel: row.service_level,
+      packageId: row.package_id,
       status: row.status,
       totalAmount: row.total_amount,
       paymentStatus: row.payment_status,
@@ -76,6 +84,7 @@ router.get('/:id', async (req, res) => {
       returnDate: row.return_date,
       passengers: row.passengers,
       serviceLevel: row.service_level,
+      packageId: row.package_id,
       status: row.status,
       totalAmount: row.total_amount,
       paymentStatus: row.payment_status,
@@ -99,8 +108,8 @@ router.post('/', async (req, res) => {
       INSERT INTO reservations (
         customer_name, customer_email, customer_phone, 
         from_location_id, from_airport, to_location_id, to_airport, 
-        departure_date, return_date, passengers, service_level, total_amount, status, payment_status, notes
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        departure_date, return_date, passengers, service_level, package_id, total_amount, status, payment_status, notes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     const params = [
@@ -115,6 +124,7 @@ router.post('/', async (req, res) => {
       data.returnDate || data.return_date || null,
       data.passengers || 1,
       data.serviceLevel || data.service_level || 'Premium',
+      data.packageId || data.package_id || null,
       data.totalAmount || data.total_amount || 0,
       data.status || 'Pending',
       data.paymentStatus || data.payment_status || 'Unpaid',
@@ -153,6 +163,7 @@ router.put('/:id', async (req, res) => {
       returnDate: 'return_date',
       passengers: 'passengers',
       serviceLevel: 'service_level',
+      packageId: 'package_id',
       status: 'status',
       totalAmount: 'total_amount',
       paymentStatus: 'payment_status',

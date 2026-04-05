@@ -9,7 +9,8 @@ import {
   getSortedRowModel,
   flexRender,
 } from '@tanstack/react-table';
-import { Search, Plus, Edit, Trash2, ArrowUpDown } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, ArrowUpDown, Eye } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LocationsAdmin() {
   const [locations, setLocations] = useState([]);
@@ -260,6 +261,13 @@ export default function LocationsAdmin() {
         const loc = row.original;
         return (
           <div className="flex items-center justify-end gap-1">
+            <Link 
+              href={`/admin/locations/${loc._id || loc.id}`}
+              className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+              title="View Location"
+            >
+              <Eye className="h-4 w-4" />
+            </Link>
             <button 
               onClick={() => handleOpenModal(loc)}
               className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"

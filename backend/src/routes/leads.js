@@ -12,6 +12,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const leads = await query('SELECT *, id as _id FROM leads WHERE id = ?', [id]);
+    if (leads.length === 0) return res.status(404).json({ message: 'Lead not found' });
+    res.json(leads[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 router.post('/', async (req, res) => {
   try {
     const data = req.body;

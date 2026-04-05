@@ -5,9 +5,14 @@ const { query, execute } = require('../config/db');
 router.get('/', async (req, res) => {
   try {
     const results = await query(`
-      SELECT id, id as _id, name, base_price as basePrice, description, features, 
-             is_active as isActive, is_popular as isPopular, rank_order as rankOrder 
-      FROM service_packages ORDER BY rank_order ASC
+      SELECT p.id, p.id as _id, p.name, p.base_price as basePrice, p.description, p.features, 
+             p.is_active as isActive, p.is_popular as isPopular, p.rank_order as rankOrder,
+             COUNT(r.id) as totalOrders,
+             COALESCE(SUM(r.total_amount), 0) as totalRevenue
+      FROM service_packages p
+      LEFT JOIN reservations r ON p.id = r.package_id AND r.status != 'Cancelled'
+      GROUP BY p.id
+      ORDER BY p.rank_order ASC
     `);
 
     const packages = results.map(pkg => {
@@ -25,6 +30,39 @@ router.get('/', async (req, res) => {
     });
 
     res.json(packages);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const results = await query(`
+      SELECT p.id, p.id as _id, p.name, p.base_price as basePrice, p.description, p.features, 
+             p.is_active as isActive, p.is_popular as isPopular, p.rank_order as rankOrder,
+             COUNT(r.id) as totalOrders,
+             COALESCE(SUM(r.total_amount), 0) as totalRevenue
+      FROM service_packages p
+      LEFT JOIN reservations r ON p.id = r.package_id AND r.status != 'Cancelled'
+      WHERE p.id = ?
+      GROUP BY p.id
+    `, [id]);
+
+    if (results.length === 0) return res.status(404).json({ message: 'Package not found' });
+
+    let pkg = results[0];
+    let parsedFeatures = [];
+    try {
+      parsedFeatures = typeof pkg.features === 'string' ? JSON.parse(pkg.features) : pkg.features || [];
+    } catch (e) {}
+
+    res.json({
+      ...pkg,
+      features: parsedFeatures,
+      isActive: Boolean(pkg.isActive),
+      isPopular: Boolean(pkg.isPopular)
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

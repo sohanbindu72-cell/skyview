@@ -12,7 +12,7 @@ export default function BookingHeader() {
           <svg className="w-6 h-6 text-[#ea580c]" viewBox="0 0 24 24" fill="currentColor">
             <path d="M22 16.5l-6.5-3.5L12 9 7 13.5l1.5-4-4.5-5 3.5 1 5 3 4.5-3.5L22 16.5z" />
           </svg>
-          <span className="tracking-tight">SKYLUXE <span className="text-[#ea580c]">VIP</span></span>
+          <span className="tracking-tight">D'LUXE <span className="text-[#ea580c]">VIP</span></span>
         </div>
       </div>
 

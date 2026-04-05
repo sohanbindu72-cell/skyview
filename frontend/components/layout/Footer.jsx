@@ -8,9 +8,8 @@ export default function Footer() {
         {/* Logo Column */}
         <div className="md:col-span-4">
           <div className="flex items-center gap-2 mb-6 text-white">
-            <svg className="w-8 h-8 text-[#ea580c]" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M22 16.5l-6.5-3.5L12 9 7 13.5l1.5-4-4.5-5 3.5 1 5 3 4.5-3.5L22 16.5z" />
-            </svg>
+            {/* Logo Image */}
+            <img src="/dluxe-logo.png" alt="D'LUXE Logo" className="w-10 h-10 object-contain rounded-md" />
             <span className="text-xl font-bold tracking-tight">D'LUXE <span className="text-[#ea580c]">VIP</span></span>
           </div>
           <p className="text-sm leading-relaxed mb-8 max-w-xs">

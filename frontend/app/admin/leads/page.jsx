@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Mail, Calendar, User, Search, Filter, Loader2, Info } from 'lucide-react';
+import { Mail, Calendar, User, Search, Filter, Loader2, Info, Eye } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState([]);
@@ -156,7 +157,14 @@ export default function LeadsPage() {
                         {new Date(lead.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
                     </td>
-                    <td className="px-6 py-5 text-right">
+                    <td className="px-6 py-5 text-right flex justify-end gap-1">
+                      <Link 
+                        href={`/admin/leads/${lead.id || lead._id}`}
+                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        title="View Lead Details"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Link>
                       <button 
                         onClick={() => deleteLead(lead.id || lead._id)}
                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"

@@ -40,7 +40,7 @@ export default function CustomersAdmin() {
   const fetchHistory = async (email) => {
     try {
       setLoadingHistory(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/customers?email=${encodeURIComponent(email)}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations?email=${encodeURIComponent(email)}`);
       if (res.ok) {
         const data = await res.json();
         setHistory(data);

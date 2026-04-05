@@ -28,11 +28,9 @@ export default function Navbar() {
     <>
       <nav className="absolute top-0 w-full z-50 flex justify-between items-center py-6 px-4 md:px-12 text-white">
         <div className="flex items-center gap-2">
-          {/* Logo SVG */}
-          <svg className="w-8 h-8 text-[#ea580c]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M22 16.5l-6.5-3.5L12 9 7 13.5l1.5-4-4.5-5 3.5 1 5 3 4.5-3.5L22 16.5z" />
-          </svg>
-          <span className="text-xl font-bold tracking-tight">SKYLUXE <span className="text-[#ea580c]">VIP</span></span>
+          {/* Logo Image */}
+          <img src="/dluxe-logo.png" alt="D'LUXE Logo" className="w-10 h-10 object-contain rounded-md" />
+          <span className="text-xl font-bold tracking-tight">D'LUXE <span className="text-[#ea580c]">VIP</span></span>
         </div>
         <div className="hidden md:flex items-center gap-8 font-medium text-sm">
           <a href={waLink} target="_blank" rel="noopener noreferrer" className="bg-[#25D366] hover:bg-green-600 flex items-center gap-2 text-white px-6 py-2.5 rounded border border-[#25D366] hover:border-green-600 font-bold transition-all shadow-lg shadow-[#25D366]/20">

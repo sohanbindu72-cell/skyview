@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Trash2, Edit, Check, X, GripVertical } from 'lucide-react';
+import { Search, Plus, Trash2, Edit, Check, X, GripVertical, Eye } from 'lucide-react';
+import Link from 'next/link';
 
 export default function PackagesAdmin() {
   const [packages, setPackages] = useState([]);
@@ -158,8 +159,14 @@ export default function PackagesAdmin() {
                   <p className="text-[#ea580c] font-black text-3xl mt-2 tracking-tighter">
                     <span className="text-sm font-bold text-gray-400 mr-1 uppercase">USD</span> ${p.basePrice}
                   </p>
+                  <div className="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <span>{p.totalOrders || 0} Orders</span>
+                    <span>•</span>
+                    <span className="text-gray-500">${Number(p.totalRevenue || 0).toLocaleString()} Rev</span>
+                  </div>
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Link href={`/admin/packages/${p._id || p.id}`} className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-colors"><Eye className="h-4 w-4" /></Link>
                   <button onClick={() => handleOpenModal(p)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"><Edit className="h-4 w-4" /></button>
                   <button onClick={() => handleDelete(p._id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"><Trash2 className="h-4 w-4" /></button>
                 </div>

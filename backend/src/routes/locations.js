@@ -24,6 +24,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const locations = await query('SELECT id, country_name as countryName, flag_icon as flagIcon FROM locations WHERE id = ?', [id]);
+    if (locations.length === 0) return res.status(404).json({ message: 'Location not found' });
+    
+    let location = locations[0];
+    location.airports = await query('SELECT id, name, link, note FROM airports WHERE location_id = ?', [location.id]);
+    
+    for (let airport of location.airports) {
+      const excluded = await query('SELECT package_id FROM airport_excluded_packages WHERE airport_id = ?', [airport.id]);
+      airport.excludedPackages = excluded.map(e => e.package_id);
+
+      const pricing = await query('SELECT package_id, custom_price FROM airport_package_pricing WHERE airport_id = ?', [airport.id]);
+      airport.customPricing = pricing;
+    }
+    
+    res.json(location);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 router.post('/', async (req, res) => {
   try {
     const { countryName, flagIcon, airports } = req.body;

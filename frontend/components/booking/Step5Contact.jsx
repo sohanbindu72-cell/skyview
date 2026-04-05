@@ -93,7 +93,7 @@ export default function Step5Contact({ onBack }) {
       </button>
       
       <p className="text-xs text-center text-gray-400 mt-2">
-        By clicking "Proceed to Pay" I acknowledge that I agree with SkyVip <a href="#" className="text-[#2a3bb1] hover:underline transition-colors">Terms & Conditions</a> & <a href="#" className="text-[#2a3bb1] hover:underline transition-colors">Privacy Policy</a>
+        By clicking "Proceed to Pay" I acknowledge that I agree with D'LUXE <a href="#" className="text-[#2a3bb1] hover:underline transition-colors">Terms & Conditions</a> & <a href="#" className="text-[#2a3bb1] hover:underline transition-colors">Privacy Policy</a>
       </p>
     </div>
   );

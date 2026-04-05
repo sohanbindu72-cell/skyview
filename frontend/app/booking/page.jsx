@@ -212,6 +212,7 @@ function BookingContent() {
       airport,
       date,
       serviceType: activeService,
+      packageId: selectedPkg._id || selectedPkg.id,
       pricePerPassenger: unitPrice,
       totalPrice: unitPrice * parseInt(passengers)
     };

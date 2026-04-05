@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,7 +16,12 @@ import { Search, Edit, Trash2, ArrowUpDown, Calendar, User, Plane, Wallet, Eye }
 export default function ReservationsAdmin() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [globalFilter, setGlobalFilter] = useState('');
+
+  // We wrap the searchParams usage in a generic way or use it safely
+  const searchStr = typeof window !== 'undefined' ? window.location.search : '';
+  const initialFilter = searchStr ? new URLSearchParams(searchStr).get('filter') || '' : '';
+  const initialPackageId = searchStr ? new URLSearchParams(searchStr).get('packageId') : null;
+  const [globalFilter, setGlobalFilter] = useState(initialFilter);
   const [sorting, setSorted] = useState([]);
   
   // Modal state
@@ -206,8 +212,15 @@ export default function ReservationsAdmin() {
     }
   ], []);
 
+  const processedReservations = useMemo(() => {
+    if (initialPackageId) {
+      return reservations.filter(r => String(r.packageId) === String(initialPackageId));
+    }
+    return reservations;
+  }, [reservations, initialPackageId]);
+
   const table = useReactTable({
-    data: reservations,
+    data: processedReservations,
     columns,
     state: { globalFilter, sorting },
     onGlobalFilterChange: setGlobalFilter,

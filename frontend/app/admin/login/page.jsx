@@ -23,7 +23,9 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push('/admin');
+        // Set cookie BEFORE redirecting
+        document.cookie = `adminToken=${data.token}; path=/; max-age=43200; SameSite=Lax;`;
+        window.location.href = '/admin'; // hard redirect so middleware picks up the cookie
       } else {
         setError(data.message || 'Login failed');
       }
