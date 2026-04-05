@@ -20,7 +20,7 @@ export default function PackagesAdmin() {
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/packages');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/packages`);
       if (res.ok) {
         const data = await res.json();
         setPackages(data);
@@ -116,7 +116,7 @@ export default function PackagesAdmin() {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this service level? It may affect existing bookings.')) return;
     try {
-      const res = await fetch(`/api/packages/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/packages/${id}`, { method: 'DELETE' });
       if (res.ok) fetchPackages();
     } catch (error) {
       console.error('Delete error:', error);

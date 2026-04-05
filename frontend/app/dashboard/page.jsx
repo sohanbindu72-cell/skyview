@@ -31,7 +31,7 @@ export default function UserDashboard() {
         };
         const token = getCookie('userToken');
 
-        const res = await fetch('/api/user/bookings', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/bookings`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -57,7 +57,7 @@ export default function UserDashboard() {
   }, [router]);
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, { method: 'POST' });
     router.push('/login');
   };
 

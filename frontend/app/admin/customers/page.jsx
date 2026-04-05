@@ -25,7 +25,7 @@ export default function CustomersAdmin() {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/customers');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/customers`);
       if (res.ok) {
         const data = await res.json();
         setCustomers(data);
@@ -40,7 +40,7 @@ export default function CustomersAdmin() {
   const fetchHistory = async (email) => {
     try {
       setLoadingHistory(true);
-      const res = await fetch(`/api/admin/customers?email=${encodeURIComponent(email)}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/customers?email=${encodeURIComponent(email)}`);
       if (res.ok) {
         const data = await res.json();
         setHistory(data);
@@ -64,7 +64,7 @@ export default function CustomersAdmin() {
   const deleteCustomer = async (id) => {
     if (!confirm('Are you sure you want to permanently delete this customer? All associated data may be lost.')) return;
     try {
-      const res = await fetch(`/api/user/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setCustomers(customers.filter(c => c.id !== id));
       }

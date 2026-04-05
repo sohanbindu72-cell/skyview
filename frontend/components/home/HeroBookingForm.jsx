@@ -24,7 +24,7 @@ export default function HeroBookingForm() {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const res = await fetch('/api/packages');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/packages`);
         if (res.ok) {
           const data = await res.json();
           const activePackages = data.filter(p => p.isActive);
@@ -36,7 +36,7 @@ export default function HeroBookingForm() {
     };
     const fetchLocations = async () => {
       try {
-        const res = await fetch('/api/locations');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/locations`);
         if (res.ok) {
           const data = await res.json();
           setLocations(data);
@@ -107,7 +107,7 @@ export default function HeroBookingForm() {
     // Capture lead first if email is provided
     if (data.email) {
       try {
-        await fetch('/api/leads', {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leads`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)

@@ -41,7 +41,7 @@ export default function LocationsAdmin() {
   const fetchLocations = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/locations');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/locations`);
       if (res.ok) {
         const data = await res.json();
         setLocations(data);
@@ -57,7 +57,7 @@ export default function LocationsAdmin() {
     fetchLocations();
     const fetchPackages = async () => {
       try {
-        const res = await fetch('/api/packages');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/packages`);
         if (res.ok) {
           const data = await res.json();
           setServicePackages(data.filter(p => p.isActive));
@@ -182,7 +182,7 @@ export default function LocationsAdmin() {
     if (!window.confirm('Are you sure you want to delete this location?')) return;
     
     try {
-      const res = await fetch(`/api/locations/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/locations/${id}`, {
         method: 'DELETE'
       });
       

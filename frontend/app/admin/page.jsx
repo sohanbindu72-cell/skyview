@@ -17,8 +17,8 @@ export default function AdminDashboard() {
     async function fetchDashboardData() {
       try {
         const [resStats, resRevenue] = await Promise.all([
-          fetch('/api/reservations'), // Assuming this exists or returns list
-          fetch('/api/admin/analytics/revenue')
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`), // Assuming this exists or returns list
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/analytics/revenue`)
         ]);
 
         if (resStats.ok && resRevenue.ok) {

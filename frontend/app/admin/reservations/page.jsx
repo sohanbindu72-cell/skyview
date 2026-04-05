@@ -31,7 +31,7 @@ export default function ReservationsAdmin() {
   const fetchReservations = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/reservations');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`);
       if (res.ok) {
         const data = await res.json();
         setReservations(data);
@@ -64,7 +64,7 @@ export default function ReservationsAdmin() {
   const handleSubmitStatus = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/reservations/${editingReservation._id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations/${editingReservation._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -86,7 +86,7 @@ export default function ReservationsAdmin() {
     if (!window.confirm('Delete this reservation? This cannot be undone.')) return;
     
     try {
-      const res = await fetch(`/api/reservations/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations/${id}`, {
         method: 'DELETE'
       });
       

@@ -9,13 +9,13 @@ export default function BookingDetails({ airport, date, passengers, activeServic
   useEffect(() => {
     const fetchPkgs = async () => {
       try {
-        const res = await fetch('/api/packages');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/packages`);
         if (res.ok) {
           const data = await res.json();
           const active = data.filter(p => p.isActive);
           
           // Fetch locations to check for exclusions
-          const locRes = await fetch('/api/locations');
+          const locRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/locations`);
           let excludedIds = [];
           if (locRes.ok) {
             const locations = await locRes.json();

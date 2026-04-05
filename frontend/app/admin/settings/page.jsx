@@ -21,7 +21,7 @@ export default function SettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const res = await fetch('/api/settings');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings`);
       if (res.ok) {
         const data = await res.json();
         setSettings(prev => ({
@@ -44,7 +44,7 @@ export default function SettingsPage() {
     setIsSaving(true);
     setMessage('');
     try {
-      const res = await fetch('/api/settings', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)

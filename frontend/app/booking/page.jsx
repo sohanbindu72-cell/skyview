@@ -93,7 +93,7 @@ function BookingContent() {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const res = await fetch('/api/packages');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/packages`);
         if (res.ok) {
           const data = await res.json();
           setAvailablePackages(data.filter(p => p.isActive));
@@ -104,7 +104,7 @@ function BookingContent() {
     };
     const fetchLocations = async () => {
       try {
-        const res = await fetch('/api/locations');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/locations`);
         if (res.ok) {
             const data = await res.json();
             setLocations(data);

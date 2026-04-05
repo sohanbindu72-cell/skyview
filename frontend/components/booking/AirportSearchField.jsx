@@ -10,7 +10,7 @@ export default function AirportSearchField({ selectedAirport, onSelect }) {
   useEffect(() => {
     async function fetchLocations() {
       try {
-        const res = await fetch("/api/locations");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/locations`);
         if (res.ok) {
           const data = await res.json();
           const flattened = [];

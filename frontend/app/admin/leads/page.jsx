@@ -15,7 +15,7 @@ export default function LeadsPage() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/leads');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leads`);
       if (res.ok) {
         const data = await res.json();
         setLeads(data);
@@ -29,7 +29,7 @@ export default function LeadsPage() {
 
   const updateLeadStatus = async (id, newStatus) => {
     try {
-      const res = await fetch(`/api/leads/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leads/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -45,7 +45,7 @@ export default function LeadsPage() {
   const deleteLead = async (id) => {
     if (!confirm('Are you sure you want to permanently delete this lead?')) return;
     try {
-      const res = await fetch(`/api/leads/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leads/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setLeads(leads.filter(l => l.id !== id && l._id !== id));
       }

@@ -20,7 +20,7 @@ export default function ReservationDetailPage() {
 
   const fetchTransactions = async () => {
     try {
-      const res = await fetch('/api/admin/transactions');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/transactions`);
       if (res.ok) {
         const data = await res.json();
         const related = data.filter(t => t.reservationId?._id === id || t.reservationId === id);
@@ -33,7 +33,7 @@ export default function ReservationDetailPage() {
 
   const fetchReservation = async () => {
     try {
-      const res = await fetch(`/api/reservations/${id}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations/${id}`);
       if (!res.ok) throw new Error("Failed to fetch reservation");
       const data = await res.ok ? await res.json() : null;
       setReservation(data);
@@ -50,7 +50,7 @@ export default function ReservationDetailPage() {
       const body = { status: newStatus };
       if (paymentStatus) body.paymentStatus = paymentStatus;
 
-      const res = await fetch(`/api/reservations/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -76,7 +76,7 @@ export default function ReservationDetailPage() {
         return;
       }
 
-      const res = await fetch('/api/admin/transactions/refund', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/transactions/refund`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

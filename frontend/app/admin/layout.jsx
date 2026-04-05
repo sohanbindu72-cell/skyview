@@ -97,7 +97,7 @@ export default function AdminLayout({ children }) {
             </a>
             <button 
               onClick={async () => {
-                await fetch('/api/auth/logout', { method: 'POST' });
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, { method: 'POST' });
                 window.location.href = '/admin/login';
               }}
               className="w-full text-left px-4 py-3 text-red-400 hover:bg-gray-800 rounded-lg transition-colors"

@@ -9,7 +9,7 @@ export default function FloatingWhatsApp() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch('/api/settings');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings`);
         if (res.ok) {
           const data = await res.json();
           if (data.whatsapp_number) {
