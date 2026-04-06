@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 
 export default function FloatingWhatsApp() {
-  const [phoneNumber, setPhoneNumber] = useState('590690695079');
-  const [displayNumber, setDisplayNumber] = useState('+590 690 69 50 79');
+  const [phoneNumber, setPhoneNumber] = useState('18555759847');
+  const [displayNumber, setDisplayNumber] = useState('+1 855 575 98 47');
 
   useEffect(() => {
     const fetchSettings = async () => {

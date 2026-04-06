@@ -7,11 +7,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-12">
         {/* Logo Column */}
         <div className="md:col-span-4">
-          <div className="flex items-center gap-2 mb-6 text-white">
+          <a href="/" className="inline-flex items-center gap-2 mb-6 hover:opacity-80 transition-opacity">
             {/* Logo Image */}
-            <img src="/dluxe-logo.png" alt="D'LUXE Logo" className="w-10 h-10 object-contain rounded-md" />
-            <span className="text-xl font-bold tracking-tight">D'LUXE <span className="text-[#ea580c]">VIP</span></span>
-          </div>
+            <img src="/dluxe-logo.jpg" alt="D'LUXE Logo" className="h-20 w-auto object-contain rounded-xl shadow-lg" />
+          </a>
           <p className="text-sm leading-relaxed mb-8 max-w-xs">
             Providing elite airport concierge and VIP terminal services globally. Experience the pinnacle of luxury travel.
           </p>

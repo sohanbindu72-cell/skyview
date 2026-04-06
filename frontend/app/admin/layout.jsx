@@ -16,9 +16,9 @@ export default function AdminLayout({ children }) {
       <div className="min-h-screen bg-gray-50 flex print:bg-white">
         {/* Sidebar */}
         <aside className="w-64 bg-gray-900 text-white flex flex-col print:hidden">
-          <div className="p-6 text-xl font-bold border-b border-gray-800">
-            D'LUXE <span className="text-[#ea580c]">VIP</span>
-          </div>
+          <a href="/" className="p-6 border-b border-gray-800 flex items-center hover:bg-gray-800 transition-colors">
+            <img src="/dluxe-logo.jpg" alt="D'LUXE Logo" className="h-16 w-auto object-contain rounded-lg" />
+          </a>
           <nav className="flex-1 p-4 space-y-2">
             <a 
               href="/admin" 

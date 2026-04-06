@@ -8,12 +8,9 @@ export default function BookingHeader() {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
           Back
         </a>
-        <div className="flex items-center gap-2 text-white font-bold text-xl ml-4 cursor-pointer">
-          <svg className="w-6 h-6 text-[#ea580c]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M22 16.5l-6.5-3.5L12 9 7 13.5l1.5-4-4.5-5 3.5 1 5 3 4.5-3.5L22 16.5z" />
-          </svg>
-          <span className="tracking-tight">D'LUXE <span className="text-[#ea580c]">VIP</span></span>
-        </div>
+        <a href="/" className="flex items-center gap-2 ml-4 hover:opacity-80 transition-opacity">
+          <img src="/dluxe-logo.jpg" alt="D'LUXE Logo" className="h-16 w-auto object-contain rounded-lg" />
+        </a>
       </div>
 
       <div className="hidden lg:flex items-center gap-8 text-gray-300 font-semibold">

@@ -14,13 +14,13 @@ export default function ReviewsSection() {
             ))}
           </div>
           <blockquote className="text-2xl font-light text-gray-600 italic mb-8 leading-snug">
-            "The seamless transition from the aircraft to my private chauffeur was remarkable. D'LUXE sets the gold standard for travel."
+            "The transition from my private jet to the chauffeur was flawlessly executed. D'LUXE has entirely redefined the standard for elite travel."
           </blockquote>
           <div className="flex items-center gap-4">
-            <img src="https://i.pravatar.cc/150?img=11" alt="James Worthington" className="w-14 h-14 rounded-full" />
+            <img src="https://i.pravatar.cc/150?img=11" alt="Alexander Sterling" className="w-14 h-14 rounded-full" />
             <div>
-              <h4 className="font-bold text-gray-900">James Worthington</h4>
-              <p className="text-sm text-gray-500">CEO, Global Ventures</p>
+              <h4 className="font-bold text-gray-900">Alexander Sterling</h4>
+              <p className="text-sm text-gray-500">Founder, Sterling Capital</p>
             </div>
           </div>
         </div>
@@ -29,22 +29,22 @@ export default function ReviewsSection() {
         <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           <div className="space-y-6">
             <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-lg transition-shadow">
-              <p className="text-gray-600 italic mb-6">"The private terminal in Dubai was an oasis of calm. Worth every penny."</p>
-              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- SARAH JENKINS</p>
+              <p className="text-gray-600 italic mb-6">"The private terminal in Paris provided an absolute sanctuary. Unparalleled privacy and impeccable service at every turn."</p>
+              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- VICTORIA CHEN</p>
             </div>
             <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-lg transition-shadow">
-              <p className="text-gray-600 italic mb-6">"Absolutely stress-free. My concierge took care of everything from luggage to fast-track."</p>
-              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- MARCUS AURELIUS</p>
+              <p className="text-gray-600 italic mb-6">"Complete peace of mind. My dedicated concierge anticipated every requirement, from fast-track clearance to luggage handling."</p>
+              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- RICHARD VANDERBILT</p>
             </div>
           </div>
           <div className="space-y-6 md:mt-12">
             <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-lg transition-shadow">
-              <p className="text-gray-600 italic mb-6">"Exceeded all expectations. The level of detail and care is unmatched in the industry."</p>
-              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- ELENA RODRIGUEZ</p>
+              <p className="text-gray-600 italic mb-6">"An experience that surpasses all expectations. The discretion and obsessive attention to detail are truly in a class of their own."</p>
+              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- ISABELLA ROSSELLINI</p>
             </div>
             <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-lg transition-shadow">
-              <p className="text-gray-600 italic mb-6">"A must-have for frequent business travelers. Efficiency at its finest."</p>
-              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- THOMAS MULLER</p>
+              <p className="text-gray-600 italic mb-6">"Essential protocol for our executive team's travel. D'LUXE guarantees flawless execution and time synchronization."</p>
+              <p className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">- JONATHAN PIERCE</p>
             </div>
           </div>
         </div>
