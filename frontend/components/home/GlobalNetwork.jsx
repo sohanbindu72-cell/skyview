@@ -18,14 +18,14 @@ export default function GlobalNetwork() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {/* Dest 1 */}
-          <div className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer">
+          <a href="/airport/london-heathrow" className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer block">
             <img src="https://images.unsplash.com/photo-1529655683826-aba9b3e77383?q=80&w=600&auto=format&fit=crop" alt="London" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
             <div className="absolute bottom-4 left-4">
               <h4 className="text-white font-bold text-lg md:text-xl">London (LHR)</h4>
               <p className="text-gray-300 text-xs font-semibold uppercase tracking-wider">United Kingdom</p>
             </div>
-          </div>
+          </a>
           {/* Dest 2 */}
           <div className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer">
             <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=600&auto=format&fit=crop" alt="Dubai" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -45,14 +45,14 @@ export default function GlobalNetwork() {
             </div>
           </div>
           {/* Dest 4 */}
-          <div className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer">
-            <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=600&auto=format&fit=crop" alt="Paris" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+          <a href="/airport/princess-juliana-sxm" className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer block">
+            <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=600&auto=format&fit=crop" alt="Sint Maarten" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
             <div className="absolute bottom-4 left-4">
-              <h4 className="text-white font-bold text-lg md:text-xl">Paris (CDG)</h4>
-              <p className="text-gray-300 text-xs font-semibold uppercase tracking-wider">France</p>
+              <h4 className="text-white font-bold text-lg md:text-xl">Sint Maarten (SXM)</h4>
+              <p className="text-gray-300 text-xs font-semibold uppercase tracking-wider">Caribbean</p>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </section>

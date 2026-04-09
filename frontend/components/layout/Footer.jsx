@@ -27,8 +27,23 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="md:col-span-1"></div>
-        <div className="md:col-span-7"></div>
+        <div className="md:col-span-4">
+          <h4 className="text-white font-bold mb-6 tracking-wide uppercase text-sm">Popular Airports</h4>
+          <ul className="space-y-3 text-sm">
+            <li><a href="/airport/princess-juliana-sxm" className="hover:text-[#ea580c] transition-colors">SXM - Princess Juliana, Sint Maarten</a></li>
+            <li><a href="/airport/los-angeles-lax" className="hover:text-[#ea580c] transition-colors">LAX - Los Angeles, USA</a></li>
+            <li><a href="/airport/london-heathrow" className="hover:text-[#ea580c] transition-colors">LHR - London Heathrow, UK</a></li>
+            <li><a href="/airport/paris-cdg" className="hover:text-[#ea580c] transition-colors">CDG - Paris Charles de Gaulle</a></li>
+          </ul>
+        </div>
+        <div className="md:col-span-4 translate-y-8">
+          <ul className="space-y-3 text-sm">
+            <li><a href="/airport/frankfurt-fra" className="hover:text-[#ea580c] transition-colors">FRA - Frankfurt, Germany</a></li>
+            <li><a href="/airport/new-york-jfk" className="hover:text-[#ea580c] transition-colors">JFK - New York, USA</a></li>
+            <li><a href="/airport/cancun-cun" className="hover:text-[#ea580c] transition-colors">CUN - Cancun, Mexico</a></li>
+            <li><a href="/locations" className="text-[#ea580c] hover:text-white font-semibold flex items-center gap-1 transition-colors mt-2">View All Locations <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></li>
+          </ul>
+        </div>
       </div>
 
       {/* Bottom Banner */}

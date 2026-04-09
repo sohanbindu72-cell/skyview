@@ -77,6 +77,14 @@ export default function AdminLayout({ children }) {
               Leads
             </a>
             <a 
+              href="/admin/pages" 
+              className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                pathname.startsWith('/admin/pages') ? 'bg-[#ea580c] text-white' : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              Landing Pages
+            </a>
+            <a 
               href="/admin/settings" 
               className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
                 pathname.startsWith('/admin/settings') ? 'bg-[#ea580c] text-white' : 'text-gray-300 hover:bg-gray-800'

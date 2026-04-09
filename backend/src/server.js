@@ -24,6 +24,7 @@ const leadsRoutes = require('./routes/leads');
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/user');
 const settingsRoutes = require('./routes/settings');
+const airportPagesRoutes = require('./routes/airport_pages');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/locations', locationRoutes);
@@ -33,6 +34,7 @@ app.use('/api/leads', leadsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/airport-pages', airportPagesRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
